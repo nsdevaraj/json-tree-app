@@ -57,30 +57,41 @@
   stroke-width: 1.5;
 }
 
+.drop-zone {
+  border: 2px dashed #ccc;
+  border-radius: 8px;
+  padding: 20px;
+  transition: all 0.3s ease;
+}
+
+.drop-zone.dragging {
+  border-color: #2196f3;
+  background-color: rgba(33, 150, 243, 0.1);
+}
+
+.drop-zone form {
+  width: 100%;
+}
+
 textarea {
   border: 1px solid #ddd;
   border-radius: 4px;
   padding: 10px;
-  resize: vertical;
   font-family: monospace;
-}
-
-textarea:focus {
-  outline: none;
-  border-color: #4ecdc4;
-  box-shadow: 0 0 0 2px rgba(78, 205, 196, 0.2);
+  resize: vertical;
 }
 
 button {
-  background-color: #4ecdc4;
+  background-color: #2196f3;
   color: white;
   border: none;
-  padding: 8px 16px;
+  padding: 10px 20px;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
 }
 
 button:hover {
-  background-color: #45b7d1;
+  background-color: #1976d2;
 }
