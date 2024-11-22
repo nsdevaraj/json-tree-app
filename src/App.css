@@ -320,3 +320,17 @@ button:hover {
   margin-right: 5px;
   border-radius: 2px;
 }
+
+.json-textarea {
+  transition: all 0.3s ease;
+  border: 2px dashed transparent;
+}
+
+.json-textarea.dragging {
+  border-color: #4a90e2;
+  background-color: rgba(74, 144, 226, 0.1);
+}
+
+.drop-overlay {
+  display: none;
+}
