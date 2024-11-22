@@ -4,10 +4,9 @@ import Tree from 'react-d3-tree';
 const JsonTree = ({ data }) => {
   const containerStyles = {
     width: '100%',
-    height: '800px',  // Increased height for vertical layout
+    height: '800px',
   };
 
-  // Custom node renderer with table view for primitive values
   const renderCustomNode = ({ nodeDatum, toggleNode }) => {
     const hasChildren = nodeDatum.children && nodeDatum.children.length > 0;
     const hasPrimitives = nodeDatum.attributes && nodeDatum.attributes.primitiveValues && nodeDatum.attributes.primitiveValues.length > 0;
@@ -15,92 +14,86 @@ const JsonTree = ({ data }) => {
     
     return (
       <g>
-        {/* Main node circle and label */}
-        <g onClick={toggleNode} style={{ cursor: 'pointer' }}>
-          <circle 
-            r={5} 
-            fill={hasChildren ? "#4ecdc4" : "#45b7d1"}
-          />
-          <text
-            x={8}
-            y={3}
-            style={{ 
-              fill: '#2c3e50',
+        <foreignObject
+          x={-120}
+          y={-25}
+          width={240}
+          height={50}
+          style={{ overflow: 'visible' }}
+        >
+          <div
+            xmlns="http://www.w3.org/1999/xhtml"
+            style={{
+              background: 'white',
+              border: '1px solid #ccc',
+              borderRadius: '4px',
+              padding: '8px',
+              cursor: 'pointer',
+              boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
               fontSize: '12px',
-              fontFamily: 'Arial',
-              alignmentBaseline: 'middle'
+              fontFamily: 'monospace'
             }}
+            onClick={toggleNode}
           >
-            {nodeDatum.name}
-            {nodeDatum.attributes && nodeDatum.attributes.type === 'array' ? ' []' : ' {}'}
-          </text>
-          {(hasChildren || hasPrimitives) && (
-            <text
-              x={-3}
-              y={3}
-              style={{
-                fill: 'white',
-                fontSize: '10px',
-                fontFamily: 'Arial',
-                alignmentBaseline: 'middle',
-                pointerEvents: 'none'
-              }}
-            >
-              {nodeDatum.__rd3t.collapsed ? '+' : '-'}
-            </text>
-          )}
-        </g>
-
-        {/* Table view for primitive values when expanded */}
-        {isExpanded && hasPrimitives && (
-          <foreignObject
-            x={-125}  // Centered above the node
-            y={-120}  // Moved up for vertical layout
-            width={250}
-            height={nodeDatum.attributes.primitiveValues.length * 25 + 30}
-          >
-            <div xmlns="http://www.w3.org/1999/xhtml">
-              <table className="node-table">
-                <thead>
-                  <tr>
-                    <th>Key</th>
-                    <th>Value</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {nodeDatum.attributes.primitiveValues.map((item, index) => (
-                    <tr key={index}>
-                      <td>{item.key}</td>
-                      <td>
-                        {item.value === null ? 'null' : 
-                         typeof item.value === 'string' ? `"${item.value}"` : 
-                         String(item.value)}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </foreignObject>
-        )}
+            {nodeDatum.attributes && nodeDatum.attributes.primitiveValues && nodeDatum.attributes.primitiveValues.map((item, index) => (
+              <div key={index} style={{ color: getValueColor(item.value) }}>
+                {item.key}: {formatValue(item.value)}
+              </div>
+            ))}
+            {!hasPrimitives && (
+              <div style={{ color: '#333' }}>{nodeDatum.name}</div>
+            )}
+            {(hasChildren || hasPrimitives) && (
+              <span style={{ 
+                position: 'absolute',
+                right: '8px',
+                top: '50%',
+                transform: 'translateY(-50%)',
+                color: '#666'
+              }}>
+                {nodeDatum.children ? `(${nodeDatum.children.length})` : ''} {isExpanded ? '▼' : '▶'}
+              </span>
+            )}
+          </div>
+        </foreignObject>
       </g>
     );
+  };
+
+  const getValueColor = (value) => {
+    switch (typeof value) {
+      case 'string':
+        return '#a31515';
+      case 'number':
+        return '#098658';
+      case 'boolean':
+        return '#0000ff';
+      default:
+        return '#333';
+    }
+  };
+
+  const formatValue = (value) => {
+    if (value === null) return 'null';
+    if (typeof value === 'string') return `"${value}"`;
+    return String(value);
   };
 
   return (
     <div style={containerStyles}>
       <Tree 
         data={data}
-        orientation="vertical"
-        pathFunc="straight"
-        translate={{ x: 400, y: 50 }}  // Centered horizontally, more space at top
-        separation={{ siblings: 2, nonSiblings: 2.5 }}  // Increased separation
-        nodeSize={{ x: 300, y: 150 }}  // Wider spacing for vertical layout
+        orientation="horizontal"
+        pathFunc="step"
+        translate={{ x: 100, y: 350 }}
+        separation={{ siblings: 2, nonSiblings: 2.5 }}
+        nodeSize={{ x: 300, y: 80 }}
         renderCustomNodeElement={renderCustomNode}
         collapsible={true}
         initialDepth={1}
         zoomable={true}
         scaleExtent={{ min: 0.3, max: 3 }}
+        pathClassFunc={() => 'custom-link'}
       />
     </div>
   );
