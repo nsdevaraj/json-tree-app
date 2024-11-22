@@ -43,17 +43,16 @@ const JsonTree = ({ data }) => {
             {!hasPrimitives && (
               <div style={{ color: '#333' }}>{nodeDatum.name}</div>
             )}
-            {(hasChildren || hasPrimitives) && (
-              <span style={{ 
-                position: 'absolute',
-                right: '8px',
-                top: '50%',
-                transform: 'translateY(-50%)',
-                color: '#666'
-              }}>
-                {nodeDatum.children ? `(${nodeDatum.children.length})` : ''} {isExpanded ? '▼' : '▶'}
-              </span>
-            )}
+            <span style={{ 
+              position: 'absolute',
+              right: '8px',
+              top: '50%',
+              transform: 'translateY(-50%)',
+              color: '#666'
+            }}>
+              {nodeDatum.children && nodeDatum.children.length > 0 ? `(${nodeDatum.children.length})` : ''}
+              {hasChildren && (isExpanded ? ' ▼' : ' ▶')}
+            </span>
           </div>
         </foreignObject>
       </g>
