@@ -1,0 +1,144 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.container {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.tree-container {
+  margin-top: 2rem;
+  background: #f5f5f5;
+  border-radius: 8px;
+  padding: 20px;
+  overflow: hidden;
+}
+
+/* Tree node styles */
+.node__root circle {
+  fill: #ff6b6b;
+  r: 10;
+}
+
+.node__branch circle {
+  fill: #4ecdc4;
+  r: 8;
+}
+
+.node__leaf circle {
+  fill: #45b7d1;
+  r: 6;
+}
+
+.rd3t-label__title {
+  fill: #2c3e50;
+  font-weight: 500;
+}
+
+/* Tree link styles */
+.rd3t-link {
+  stroke: #95a5a6;
+  stroke-width: 1;
+}
+
+/* Node table styles */
+.node-table {
+  background: white;
+  border-collapse: collapse;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  font-family: Arial, sans-serif;
+  font-size: 11px;
+  width: 100%;
+}
+
+.node-table th,
+.node-table td {
+  padding: 4px 8px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+
+.node-table th {
+  background: #f8f9fa;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.node-table tr:last-child td {
+  border-bottom: none;
+}
+
+.node-table tr:hover td {
+  background: #f8f9fa;
+}
+
+/* Zoom controls */
+.rd3t-tree-container {
+  background-color: transparent;
+}
+
+/* Custom scrollbar for textarea */
+textarea {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 10px;
+  resize: vertical;
+}
+
+textarea:focus {
+  outline: none;
+  border-color: #4ecdc4;
+  box-shadow: 0 0 0 2px rgba(78, 205, 196, 0.2);
+}
+
+button {
+  background-color: #4ecdc4;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+button:hover {
+  background-color: #45b7d1;
+}
