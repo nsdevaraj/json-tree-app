@@ -47,7 +47,7 @@ function App() {
     e.preventDefault();
     try {
       // Replace hideBlankColumns with hideBlankCols in the JSON input
-      const modifiedInput = jsonInput.replace(/"hideBlankColumns"/g, '"hideBlankCols"');
+      const modifiedInput = jsonInput.replace(/"hideBlankCols"/g, '"hideBlankColumns"');
       jsonlint.parse(modifiedInput);
       const jsonData = JSON.parse(modifiedInput);
       const data = buildTreeData('root', jsonData);
