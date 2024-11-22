@@ -6,13 +6,12 @@
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "jsondiffpatch": "^0.6.0",
     "jsonlint": "^1.6.3",
     "react": "^18.2.0",
     "react-d3-tree": "^3.6.2",
     "react-dom": "^18.2.0",
-    "react-json-tree": "^0.18.0",
-    "react-scripts": "5.0.1",
-    "web-vitals": "^2.1.4"
+    "react-json-tree": "^0.18.0"
   },
   "scripts": {
     "start": "react-app-rewired start",
@@ -41,6 +40,7 @@
   "devDependencies": {
     "buffer": "^6.0.3",
     "path-browserify": "^1.0.1",
+    "react-scripts": "5.0.1",
     "react-app-rewired": "^2.2.1"
   }
 }

@@ -1,24 +1,24 @@
 import React, { useState } from 'react';
 import JsonTree from './JsonTree';
 import jsonlint from 'jsonlint';
+import JsonComparer from './compareJson';
 import './App.css';
 
 function App() {
   const [jsonInput, setJsonInput] = useState('');
   const [treeData, setTreeData] = useState(null);
+  const [activeView, setActiveView] = useState('tree'); 
+  const [jsonInput2, setJsonInput2] = useState('');
 
   const buildTreeData = (key, value) => {
-    // For objects and arrays
     if (typeof value === 'object' && value !== null) {
       const children = [];
       const primitiveValues = [];
 
       Object.entries(value).forEach(([childKey, childValue]) => {
         if (typeof childValue === 'object' && childValue !== null) {
-          // Add objects and arrays as tree nodes
           children.push(buildTreeData(childKey, childValue));
         } else {
-          // Collect primitive values
           primitiveValues.push({ key: childKey, value: childValue });
         }
       });
@@ -33,7 +33,6 @@ function App() {
       };
     }
 
-    // This should not be reached as primitive values are handled in the parent
     return {
       name: key,
       attributes: {
@@ -48,32 +47,58 @@ function App() {
     try {
       jsonlint.parse(jsonInput);
       const jsonData = JSON.parse(jsonInput);
-      const data = buildTreeData('root', jsonData);
-      setTreeData(data);
+      if (activeView === 'tree') {
+        const tree = buildTreeData('root', jsonData);
+        setTreeData(tree);
+      } else {
+        jsonlint.parse(jsonInput2);
+        const jsonData2 = JSON.parse(jsonInput2);
+      }
     } catch (error) {
-      alert('Invalid JSON input.');
+      alert('Invalid JSON: ' + error.message);
     }
   };
 
   return (
-    <div className="container">
-      <h1>JSON Tree Visualizer</h1>
+    <div className="App">
+      <div className="view-toggle">
+        <button
+          className={`toggle-btn ${activeView === 'tree' ? 'active' : ''}`}
+          onClick={() => setActiveView('tree')}
+        >
+          JSON Tree
+        </button>
+        <button
+          className={`toggle-btn ${activeView === 'compare' ? 'active' : ''}`}
+          onClick={() => setActiveView('compare')}
+        >
+          JSON Comparer
+        </button>
+      </div>
+
       <form onSubmit={handleSubmit}>
         <textarea
           value={jsonInput}
           onChange={(e) => setJsonInput(e.target.value)}
-          placeholder="Enter JSON here"
-          rows="10"
-          cols="50"
-          style={{ width: '100%', marginBottom: '1rem' }}
+          placeholder="Enter your JSON here..."
         />
-        <button type="submit">Generate Tree</button>
+        {activeView === 'compare' && (
+          <textarea
+            value={jsonInput2}
+            onChange={(e) => setJsonInput2(e.target.value)}
+            placeholder="Enter second JSON for comparison..."
+          />
+        )}
+        <button type="submit">Process JSON</button>
       </form>
-      {treeData && (
-        <div className="tree-container">
-          <JsonTree data={treeData} />
-        </div>
-      )}
+
+      <div className="result-container">
+        {activeView === 'tree' ? (
+          treeData && <JsonTree data={treeData} />
+        ) : (
+          <JsonComparer json1={jsonInput} json2={jsonInput2} />
+        )}
+      </div>
     </div>
   );
 }
