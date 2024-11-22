@@ -4,13 +4,14 @@ import Tree from 'react-d3-tree';
 const JsonTree = ({ data }) => {
   const containerStyles = {
     width: '100%',
-    height: '600px',
+    height: '800px',  // Increased height for vertical layout
   };
 
-  // Custom node renderer with table view for children
+  // Custom node renderer with table view for primitive values
   const renderCustomNode = ({ nodeDatum, toggleNode }) => {
     const hasChildren = nodeDatum.children && nodeDatum.children.length > 0;
-    const isExpanded = hasChildren && !nodeDatum.__rd3t.collapsed;
+    const hasPrimitives = nodeDatum.attributes && nodeDatum.attributes.primitiveValues && nodeDatum.attributes.primitiveValues.length > 0;
+    const isExpanded = !nodeDatum.__rd3t.collapsed;
     
     return (
       <g>
@@ -31,8 +32,9 @@ const JsonTree = ({ data }) => {
             }}
           >
             {nodeDatum.name}
+            {nodeDatum.attributes && nodeDatum.attributes.type === 'array' ? ' []' : ' {}'}
           </text>
-          {hasChildren && (
+          {(hasChildren || hasPrimitives) && (
             <text
               x={-3}
               y={3}
@@ -49,13 +51,13 @@ const JsonTree = ({ data }) => {
           )}
         </g>
 
-        {/* Table view for children when expanded */}
-        {isExpanded && hasChildren && (
+        {/* Table view for primitive values when expanded */}
+        {isExpanded && hasPrimitives && (
           <foreignObject
-            x={20}
-            y={10}
+            x={-125}  // Centered above the node
+            y={-120}  // Moved up for vertical layout
             width={250}
-            height={nodeDatum.children.length * 25 + 30}
+            height={nodeDatum.attributes.primitiveValues.length * 25 + 30}
           >
             <div xmlns="http://www.w3.org/1999/xhtml">
               <table className="node-table">
@@ -66,11 +68,13 @@ const JsonTree = ({ data }) => {
                   </tr>
                 </thead>
                 <tbody>
-                  {nodeDatum.children.map((child, index) => (
+                  {nodeDatum.attributes.primitiveValues.map((item, index) => (
                     <tr key={index}>
-                      <td>{child.name.split(': ')[0]}</td>
+                      <td>{item.key}</td>
                       <td>
-                        {child.children ? '(Object)' : child.name.split(': ')[1]}
+                        {item.value === null ? 'null' : 
+                         typeof item.value === 'string' ? `"${item.value}"` : 
+                         String(item.value)}
                       </td>
                     </tr>
                   ))}
@@ -87,11 +91,11 @@ const JsonTree = ({ data }) => {
     <div style={containerStyles}>
       <Tree 
         data={data}
-        orientation="horizontal"
+        orientation="vertical"
         pathFunc="straight"
-        translate={{ x: 50, y: 250 }}
-        separation={{ siblings: 1, nonSiblings: 1.5 }}
-        nodeSize={{ x: 40, y: 270 }}
+        translate={{ x: 400, y: 50 }}  // Centered horizontally, more space at top
+        separation={{ siblings: 2, nonSiblings: 2.5 }}  // Increased separation
+        nodeSize={{ x: 300, y: 150 }}  // Wider spacing for vertical layout
         renderCustomNodeElement={renderCustomNode}
         collapsible={true}
         initialDepth={1}

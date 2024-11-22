@@ -7,30 +7,37 @@ function App() {
   const [jsonInput, setJsonInput] = useState('');
   const [treeData, setTreeData] = useState(null);
 
-  const transformToTreeData = (key, value) => {
-    if (value === null) {
+  const buildTreeData = (key, value) => {
+    // For objects and arrays
+    if (typeof value === 'object' && value !== null) {
+      const children = [];
+      const primitiveValues = [];
+
+      Object.entries(value).forEach(([childKey, childValue]) => {
+        if (typeof childValue === 'object' && childValue !== null) {
+          // Add objects and arrays as tree nodes
+          children.push(buildTreeData(childKey, childValue));
+        } else {
+          // Collect primitive values
+          primitiveValues.push({ key: childKey, value: childValue });
+        }
+      });
+
       return {
-        name: `${key}: null`,
+        name: key,
+        children: children,
         attributes: {
-          type: 'null'
+          primitiveValues: primitiveValues,
+          type: Array.isArray(value) ? 'array' : 'object'
         }
       };
     }
 
-    if (typeof value === 'object') {
-      const children = Object.entries(value).map(([k, v]) => transformToTreeData(k, v));
-      return {
-        name: key,
-        attributes: {
-          type: Array.isArray(value) ? 'array' : 'object'
-        },
-        children
-      };
-    }
-
+    // This should not be reached as primitive values are handled in the parent
     return {
-      name: `${key}: ${value}`,
+      name: key,
       attributes: {
+        primitiveValues: [],
         type: typeof value
       }
     };
@@ -41,8 +48,8 @@ function App() {
     try {
       jsonlint.parse(jsonInput);
       const jsonData = JSON.parse(jsonInput);
-      const treeStructure = transformToTreeData('root', jsonData);
-      setTreeData(treeStructure);
+      const data = buildTreeData('root', jsonData);
+      setTreeData(data);
     } catch (error) {
       alert('Invalid JSON input.');
     }
